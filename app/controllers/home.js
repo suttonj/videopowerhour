@@ -3,9 +3,9 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Article = mongoose.model('Article');
 
-module.exports = function (app) {
-  app.use('/', router);
-};
+// module.exports = function (app) {
+//   app.use('/', router);
+// };
 
 router.get('/', function (req, res, next) {
 
@@ -17,3 +17,5 @@ router.get('/', function (req, res, next) {
     });
   });
 });
+
+module.exports = router;

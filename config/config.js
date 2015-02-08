@@ -8,8 +8,9 @@ var config = {
     app: {
       name: 'videopowerhour-v2'
     },
-    port: 3000,
-    db: 'mongodb://localhost/videopowerhour-development'
+    port: process.env.PORT,
+    db: 'mongodb://localhost/videopowerhour-development',
+    seedDB: false
   },
 
   test: {

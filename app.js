@@ -13,9 +13,13 @@ var models = glob.sync(config.root + '/app/models/*.js');
 models.forEach(function (model) {
   require(model);
 });
+
+if(config.seedDB) { require('./config/seed'); }
+
 var app = express();
 
 require('./config/express')(app, config);
+require('./config/routes')(app);
 
 app.listen(config.port);
 
