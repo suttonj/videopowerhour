@@ -139,7 +139,7 @@ console.log("playlist loaded in play:");
                 screen.pause();
             }
             
-        },10000);
+        },60000);
         
         rear.load();
         rear.one('playing', function() {

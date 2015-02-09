@@ -1,7 +1,7 @@
 'use strict';
 
 var PH = PH || {};
-PH.Playlists = (function playlistControl(http, $) {
+PH.Playlists = (function playlistControl($) {
     var videos = [];
     var playlists = [];
     var selectedPlaylist = null;
@@ -35,17 +35,6 @@ PH.Playlists = (function playlistControl(http, $) {
       }
       return shuffled.slice(min);
     }
-
-    // function fetchPlaylists(callback) {
-    //   console.log('***fetching all playlists....');
-    //   http.get('/api/playlists').success(function(result) {
-    //     playlists = result;
-    //     videos = JSON.stringify(getRandomSubSet(playlists[1].videos));
-    //     console.log('service playlists ');
-    //     console.dir(playlists);
-    //     callback(videos);
-    //   });
-    // }
 
     function getCurrentPlaylist() {
       var collection = playlists;// || fetchAllPlaylists();
@@ -93,25 +82,7 @@ PH.Playlists = (function playlistControl(http, $) {
                 deferred.reject(msg);
                 //$log.error(msg, code);
              });
-    //   http.get('/api/playlists')
-    //      .success(function(data) {
-    //         playlists = data;
-    //         console.log('got all playlists from api');
-    //         deferred.resolve(data.map(function(item) {
-    //           return { 
-    //             title: item.name,
-    //             id: item.id,
-    //             videos: item.videos
-    //           }
-    //         }));
-    //          //   title: data.name,
-    //          //   id: data.id,
-    //          //   videos: data.videos
-    //          // });
-    //      }).error(function(msg, code) {
-    //         deferred.reject(msg);
-    //         //$log.error(msg, code);
-    //      });
+             
         return deferred.promise();
     }
     
@@ -120,4 +91,4 @@ PH.Playlists = (function playlistControl(http, $) {
         this.videos = playlists[1].videos;
     }
     
-})(http, jQuery);
+})(jQuery);
