@@ -1,4 +1,34 @@
 
+<div class="container">
+  <video id="screen1" class="video-js vjs-default-skin"
+    controls preload="auto" width="100%" height="540px">
+   <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+  </video>
+  <video id="screen2" class="video-js vjs-default-skin hide"
+    controls preload="auto" width="100%" height="540px">
+   <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+  </video>
+</div>
 
-  <h1>{{title }}</h1>
-  <p>Welcome to {{title }}</p>
+<script type="text/javascript">
+  $( document ).ready(function() {
+        
+    PH.Playlists.fetchAll().then(function(playlists) {
+        PH.Playlists.setPlaylists(playlists);;
+    console.log("playlists fetched -- ");
+        videos = playlists[1].videos;
+        PH.Player.setup();
+      //$scope.playbackActive = true;
+      //$scope.$digest();
+      //playerFunctions.init();
+    });
+    
+  });
+</script>
+
+<footer class="footer">
+  <div class="container">
+      <p>Video Power Hours</p>
+      <p>{{ playlist }}</p>
+  </div>
+</footer>
