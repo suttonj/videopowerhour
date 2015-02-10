@@ -2,7 +2,7 @@
 
 
 var PH = PH || {};
-PH.Player = (function playerControl($, playlists) {
+PH.Player = (function playerControl($, _, playlists) {
     var ytUrlPrefix = "http://www.youtube.com/watch?v=",
     screen1 = null,
     screen2 = null, 
@@ -14,7 +14,8 @@ PH.Player = (function playerControl($, playlists) {
     return {
       play: play,
       setup: setup,
-      reset: reset
+      reset: reset,
+      setPlaylist: setSelectedPlaylist
     };
 
     function setup () {
@@ -33,7 +34,8 @@ PH.Player = (function playerControl($, playlists) {
                 "screen1", 
                 { 
                   "techOrder": ["youtube"], 
-                   "src": ytUrlPrefix + placeholder
+                   "src": ytUrlPrefix + placeholder,
+                   "controls": false
                  },
                 function() {
                   console.log("screen1 loaded -- constructer cb:");
@@ -44,7 +46,8 @@ PH.Player = (function playerControl($, playlists) {
                 "screen2", 
                 { 
                   "techOrder": ["youtube"], 
-                   "src": ytUrlPrefix + videos[1]
+                   "src": ytUrlPrefix + videos[1],
+                   "controls": false
                  },
                 function() {
                   console.log("screen2 loaded -- constructer cb:");
@@ -158,8 +161,33 @@ console.log("playlist loaded in play:");
         });
         screen.play();
         playbackActive = true;
+        $("#playicon").hide();
+        $("#pauseicon").show();
     }
 
+    function setSelectedPlaylist (title) {
+        var title = title;
+        console.log('selected playlist: ' + title);
+
+        if (_.contains(playlists.getAvailablePlaylists(), title)) {
+            return false;
+        } else {
+            playlists.setSelected(title);
+        }
+        reset();
+        updateCurrentPlaylist(title);
+
+        /* TODO trigger on playlist loaded */
+        setTimeout( function () {
+        	play(true);
+        	return true;
+        }, 2000);
+    }
+		   
+    function updateCurrentPlaylist(title) {
+        $("#currentplaylist").html(title);    
+    }
+    
     function togglePlayback() { 
          if (!playbackActive) {
             play(); 
@@ -203,4 +231,4 @@ console.log("playlist loaded in play:");
     function getBackgroundPlayer() {
         return screen1.hasClass('hide') ? screen1 : screen2;
     }
-})($, PH.Playlists);
+})($, _, PH.Playlists);

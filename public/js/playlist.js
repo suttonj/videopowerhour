@@ -13,7 +13,8 @@ PH.Playlists = (function playlistControl($) {
       getSelected: getSelected,
       setSelected: setSelected,
       fetchAll: fetchAllPlaylists,
-      setPlaylists: setPlaylists
+      setPlaylists: setPlaylists,
+      getAvailablePlaylists: getAvailablePlaylists
     };
 
 
@@ -92,9 +93,13 @@ PH.Playlists = (function playlistControl($) {
         
         $('#list').html("");
         for (var i = 0; i < playlists.length; i++) {
-            $("#list").append('<li><a href="#">' + playlists[i].title + '</a></li>');
+            $("#list").append('<li><a href="#" onclick="PH.Player.setPlaylist(\'' + playlists[i].title + '\')">' + playlists[i].title + '</a></li>');
         }
         
+    }
+    
+    function getAvailablePlaylists() {
+        return this.playlists;
     }
     
 })(jQuery);
