@@ -1,7 +1,7 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+// body {
+//   padding: 50px;
+//   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+// }
 
 a {
   color: #00B7FF;
@@ -34,6 +34,18 @@ a {
 /**
  * App-wide Styles
  */
+
+#controlbar {
+    margin-bottom: 0;
+}
+
+#currentplaylist {
+    font-weight: bold;
+    display: inline-block;
+    line-height: 20px;
+    padding-left: 15px;
+    padding-right: 10px;
+}
 
 .browsehappy {
     margin: 0.2em 0;

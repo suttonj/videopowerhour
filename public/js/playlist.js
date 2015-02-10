@@ -89,6 +89,12 @@ PH.Playlists = (function playlistControl($) {
     function setPlaylists(playlists) {
         this.playlists = playlists;
         this.videos = playlists[1].videos;
+        
+        $('#list').html("");
+        for (var i = 0; i < playlists.length; i++) {
+            $("#list").append('<li><a href="#">' + playlists[i].title + '</a></li>');
+        }
+        
     }
     
 })(jQuery);

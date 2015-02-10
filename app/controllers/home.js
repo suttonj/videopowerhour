@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
   //   if (err) return next(err);
     res.render('index', {
       title: 'Powerhour Video',
-      // playlist: JSON.parse(playlist)
+      defaultPlaylistTitle: "Billboard Top 100"
     });
   // });
   

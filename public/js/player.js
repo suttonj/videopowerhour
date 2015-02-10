@@ -7,6 +7,7 @@ PH.Player = (function playerControl($, playlists) {
     screen1 = null,
     screen2 = null, 
     currentScreen = screen1,
+    playbackActive = false,
     videos = [];
 
     // Public API here
@@ -59,17 +60,23 @@ PH.Player = (function playerControl($, playlists) {
               screen1.ready(function() {
                 console.log('screen1 ready -- screen1.ready');
                 screen1.currentTime(50);
-                play(false);
+                screen1.pause();
+                //play(false);
               });
               screen2.ready(function() {
                 console.log('screen2 ready -- screen2.ready');
                 screen2.currentTime(50);
+                screen2.pause();
               });
 
               //clearInterval(poll);
+              $("#toggleplayback").click(togglePlayback);
+              $("#toggleplayback").one('click', function() {
+                  play(false);
+              })
             }
 //        }, 200);
-    
+        $("#toggleplayback").removeAttr("disabled");
     }
 
     function play(started) {
@@ -121,6 +128,7 @@ console.log("playlist loaded in play:");
                     rear.pause();
                     console.log('pausing preloaded video');
                 });
+                playbackActive = true;
             }
             else if (played <= 60 && played >= videos.length) {
                 screen.play();
@@ -132,11 +140,13 @@ console.log("playlist loaded in play:");
                     console.log('pausing preloaded video');
                 });
                 console.log('playlist too short, looping to the start');
+                playbackActive = true;
             }
             else {
                 clearInterval(window.videoLoop);
                 console.log('playlist over.');
                 screen.pause();
+                playbackActive = false;
             }
             
         },60000);
@@ -147,8 +157,28 @@ console.log("playlist loaded in play:");
             console.log('pausing preloaded video');
         });
         screen.play();
+        playbackActive = true;
     }
 
+    function togglePlayback() { 
+         if (!playbackActive) {
+            play(); 
+            playbackActive = true;
+            //$scope.$apply();
+            $("#playicon").hide();
+            $("#pauseicon").show();
+         }
+         else {
+            screen1.pause();
+            screen2.pause();
+            clearInterval(window.videoLoop);
+            playbackActive = false;
+            //$scope.$apply();
+            $("#pauseicon").hide();
+            $("#playicon").show();
+         }
+      };
+	      	
     function next() {
         var screen = getBackgroundPlayer();
         var played = ++window.playlistPosition;
