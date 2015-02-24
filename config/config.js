@@ -10,7 +10,7 @@ var config = {
     },
     port: process.env.PORT,
     db: 'mongodb://localhost/videopowerhour-development',
-    seedDB: true
+    seedDB: false
   },
 
   test: {

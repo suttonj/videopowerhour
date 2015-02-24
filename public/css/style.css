@@ -32,8 +32,40 @@ a {
 #toggleplayback {
   width: 80px; }
 
-#screen {
-  width: 100%; }
+#start {
+  padding: 15px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 640px;
+  z-index: 9999; }
+
+#start .dropdown {
+  display: inline-block;
+  padding-right: 20px; }
+
+#startbutton {
+  display: inline-block; }
+
+#screenholder {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  background: url(images/beer_bg.jpg) no-repeat;
+  background-size: cover;
+  transition: 1s opacity; }
+
+.screen {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100; }
 
 .browsehappy {
   margin: 0.2em 0;
@@ -53,5 +85,24 @@ a {
   top: 0px;
   z-index: -1; }
 
+#screenholder button {
+  display: block;
+  width: 50px;
+  padding: 0.4rem;
+  border: none;
+  margin: 1rem auto;
+  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.23);
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.3s background; }
+
+#screenholder button:hover {
+  background: rgba(0, 0, 0, 0.5); }
+
 .hide {
   display: none; }
+
+.stopfade {
+  opacity: 0.5; }

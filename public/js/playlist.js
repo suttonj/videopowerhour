@@ -1,7 +1,7 @@
 'use strict';
 
 var PH = PH || {};
-PH.Playlists = (function playlistControl($) {
+PH.Playlists = (function playlistControl($, player) {
     var videos = [];
     var playlists = [];
     var selectedPlaylist = null;
@@ -9,7 +9,7 @@ PH.Playlists = (function playlistControl($) {
 
     // Public API here
     return {
-      getCurrent: getCurrentPlaylist,
+      getCurrentPlaylistVideos: getCurrentPlaylistVideos,
       getSelected: getSelected,
       setSelected: setSelected,
       fetchAll: fetchAllPlaylists,
@@ -37,7 +37,7 @@ PH.Playlists = (function playlistControl($) {
       return shuffled.slice(min);
     }
 
-    function getCurrentPlaylist() {
+    function getCurrentPlaylistVideos() {
       var collection = playlists;// || fetchAllPlaylists();
       if (collection.length == 0) 
         return null;
@@ -92,14 +92,26 @@ PH.Playlists = (function playlistControl($) {
         this.videos = playlists[1].videos;
         
         $('#list').html("");
+        $("#startlist").html("");
+        
         for (var i = 0; i < playlists.length; i++) {
-            $("#list").append('<li><a href="#" onclick="PH.Player.setPlaylist(\'' + playlists[i].title + '\')">' + playlists[i].title + '</a></li>');
+            $("#list").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="PH.Player.setPlaylist(\'' + playlists[i].title + '\')">' + playlists[i].title + '</a></li>');
+            $("#startlist").append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + playlists[i].title + '</a></li>');
         }
         
+        $(".dropdown-menu li a").click(function(){
+          var selected = $(this).text();
+          $('#playlistselect').html(selected+' <span class="caret"></span>');
+        });
+        
+        $("#startbutton").click(function() {
+            var title = $('#playlistselect').text().trim();
+            PH.Player.setPlaylist(title);
+        })
     }
     
     function getAvailablePlaylists() {
         return this.playlists;
     }
     
-})(jQuery);
+})(jQuery, PH.Player);

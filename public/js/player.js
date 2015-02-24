@@ -21,7 +21,7 @@ PH.Player = (function playerControl($, _, playlists) {
     function setup () {
       // var playlist = playlistService.getPlaylist();
 //        var poll = setInterval(function() {
-            videos = playlists.getCurrent();
+            videos = playlists.getCurrentPlaylistVideos();
             if (videos === null) {
                 setTimeout(setup, 300);
                 return;
@@ -74,16 +74,17 @@ PH.Player = (function playerControl($, _, playlists) {
 
               //clearInterval(poll);
               $("#toggleplayback").click(togglePlayback);
-              $("#toggleplayback").one('click', function() {
-                  play(false);
-              })
+              $("#vidpause").click(togglePlayback);
+            //   $("#toggleplayback").one('click', function() {
+            //       play(false);
+            //   })
             }
 //        }, 200);
         $("#toggleplayback").removeAttr("disabled");
     }
 
     function play(started) {
-        var videos = videos || playlists.getCurrent();
+        var videos = videos || playlists.getCurrentPlaylistVideos();
 console.log("playlist loaded in play:");
 
         window.playlistPosition = window.playlistPosition || 0;
@@ -94,6 +95,8 @@ console.log("playlist loaded in play:");
         if (window.videoLoop) {
           clearInterval(window.videoLoop);
         }
+        
+        $("#start").addClass('hide');
 
         if (started) {
             screen.removeClass('hide');
@@ -166,17 +169,19 @@ console.log("playlist loaded in play:");
     }
 
     function setSelectedPlaylist (title) {
-        var title = title;
         console.log('selected playlist: ' + title);
-
-        if (_.contains(playlists.getAvailablePlaylists(), title)) {
-            return false;
-        } else {
-            playlists.setSelected(title);
+        var currentPlaylist = $("#currentplaylist").text().trim();
+        if (title != currentPlaylist)
+        {   
+            if (_.contains(playlists.getAvailablePlaylists(), title)) {
+                return false;
+            } else {
+                playlists.setSelected(title);
+            }
+            reset();
+            updateCurrentPlaylist(title);
         }
-        reset();
-        updateCurrentPlaylist(title);
-
+        
         /* TODO trigger on playlist loaded */
         setTimeout( function () {
         	play(true);
@@ -189,23 +194,37 @@ console.log("playlist loaded in play:");
     }
     
     function togglePlayback() { 
-         if (!playbackActive) {
+        var s1paused = screen1.paused();
+        var s2paused = screen2.paused();
+        var pauseButton = $('#vidpause');
+        screen1.el().classList.toggle("stopfade");
+        screen2.el().classList.toggle("stopfade");
+        
+         //if (!playbackActive) {
+        if (s1paused && s2paused) {
             play(); 
             playbackActive = true;
+            pauseButton.html("Pause");
             //$scope.$apply();
             $("#playicon").hide();
             $("#pauseicon").show();
-         }
-         else {
-            screen1.pause();
-            screen2.pause();
+        }
+        else {
+            if (s1paused) {
+                screen2.pause();
+                //screen2.el().classList.toggle("stopfade");
+            } else {
+                screen1.pause();
+                //screen1.el().classList.toggle("stopfade");
+            }
             clearInterval(window.videoLoop);
             playbackActive = false;
+            pauseButton.html("Paused");
             //$scope.$apply();
             $("#pauseicon").hide();
             $("#playicon").show();
-         }
-      };
+        }
+    }
 	      	
     function next() {
         var screen = getBackgroundPlayer();
