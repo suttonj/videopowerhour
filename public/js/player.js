@@ -74,7 +74,7 @@ PH.Player = (function playerControl($, _, playlists) {
 
               //clearInterval(poll);
               $("#toggleplayback").click(togglePlayback);
-              $("#vidpause").click(togglePlayback);
+              $("#vidcontrol").click(togglePlayback);
             //   $("#toggleplayback").one('click', function() {
             //       play(false);
             //   })
@@ -97,7 +97,8 @@ console.log("playlist loaded in play:");
         }
         
         $("#start").addClass('hide');
-
+        $("#vidcontrol").show();
+        
         if (started) {
             screen.removeClass('hide');
             rear.addClass('hide');
@@ -196,7 +197,7 @@ console.log("playlist loaded in play:");
     function togglePlayback() { 
         var s1paused = screen1.paused();
         var s2paused = screen2.paused();
-        var pauseButton = $('#vidpause');
+        var pauseButton = $('#vidcontrol');
         screen1.el().classList.toggle("stopfade");
         screen2.el().classList.toggle("stopfade");
         
@@ -205,6 +206,7 @@ console.log("playlist loaded in play:");
             play(); 
             playbackActive = true;
             pauseButton.html("Pause");
+            $(pauseButton).find('span').removeClass("glyphicon-play").addClass("glyphicon-pause");
             //$scope.$apply();
             $("#playicon").hide();
             $("#pauseicon").show();
@@ -220,6 +222,7 @@ console.log("playlist loaded in play:");
             clearInterval(window.videoLoop);
             playbackActive = false;
             pauseButton.html("Paused");
+            $(pauseButton).find('span').removeClass("glyphicon-pause").addClass("glyphicon-play");
             //$scope.$apply();
             $("#pauseicon").hide();
             $("#playicon").show();

@@ -52,6 +52,8 @@ a {
 }
 
 #start {
+    position: relative;
+    display: block;
     padding: 15px;
     margin: 0 auto;
     text-align: center;
@@ -62,10 +64,12 @@ a {
 #start .dropdown {
     display: inline-block;
     padding-right: 20px;
+    z-index: 500;
 }
 
 #startbutton {
     display: inline-block;
+    z-index: 500;
 }
 
 #screenholder {
@@ -76,7 +80,7 @@ a {
     min-height: 100%;
     width: auto; 
     height: auto; 
-    z-index: -100;
+    z-index: -101;
     background: url(images/beer_bg.jpg) no-repeat;
     background-size: cover;
     transition: 1s opacity; 
@@ -87,8 +91,22 @@ a {
     min-width: 100%; 
     min-height: 100%;
     width: auto; 
-    height: auto; 
+    height: auto;
+    height: 100vh;
     z-index: -100;
+}
+
+.overlay {
+    position: fixed; 
+    left: 0; 
+    top: 50px;
+    min-width: 100%; 
+    min-height: 100%;
+    width: auto; 
+    height: auto; 
+    z-index: 100;
+    background-color: rgba(255,255,255,0);
+    background-size: cover;    
 }
 
 .browsehappy {
@@ -112,18 +130,30 @@ a {
     z-index: -1;
 }
 
-#screenholder button { 
-  display: block;
-  width: 50px;
+#vidcontrol { 
+  display: none;
+  position: relative;
+  width: 60px;
+  height: 60px;
   padding: .4rem;
   border: none; 
   margin: 1rem auto; 
   font-size: 1.3rem;
-  background: rgba(255,255,255,0.23);
+  background: #666666;
   color: #fff;
   border-radius: 3px; 
   cursor: pointer;
   transition: .3s background;
+  z-index: 500;
+  text-align: center;
+  line-height: 1.4em;
+  vertical-align: middle;
+  opacity: 0.7;
+  margin: 15px;
+  font-weight: bold;
+  -moz-border-radius: 60px 60px 60px 60px;
+  -webkit-border-radius: 60px 60px 60px 60px;
+  border-radius: 60px 60px 60px 60px;
 }
 
 #screenholder button:hover { 
@@ -136,4 +166,19 @@ a {
 
 .stopfade { 
     opacity: .5; 
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    background-color: #101010;
+    color: #9d9d9d;
+}
+
+.footer p {
+    vertical-align: middle;
+    margin-top: 5px;
 }

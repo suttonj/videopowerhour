@@ -2,44 +2,22 @@
 
 {{> start }}
 
-<div id="screenholder" >
+<div id="screenholder">
   <video id="screen1" class="video-js vjs-default-skin screen hide"
-    controls preload="auto" width="100%" height="540px">
+    controls preload="auto" width="100%" height="100vh">
    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
   </video>
   <video id="screen2" class="video-js vjs-default-skin screen hide"
-    controls preload="auto" width="100%" height="540px">
+    controls preload="auto" width="100%" height="100vh">
    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
   </video>
-  <button id="vidpause">Pause</button>
 </div>
 
-<script type="text/javascript">
-  // var vid = document.getElementById("bgvid");
-  // var pauseButton = document.getElementById("vidpause");
-  
-  // function vidFade() {
-  //   vid.classList.add("stopfade");
-  // }
-  
-  // vid.addEventListener('ended', function() {
-  //   // only functional if "loop" is removed
-  //   vid.pause();
-  //   // to capture IE10
-  //   vidFade();
-  // });
-  
-  // pauseButton.addEventListener("click", function() {
-  //   vid.classList.toggle("stopfade");
-  //   if (vid.paused) {
-  //     vid.play();
-  //     pauseButton.innerHTML = "Pause";
-  //   } else {
-  //     vid.pause();
-  //     pauseButton.innerHTML = "Paused";
-  //   }
-  // });
+<button id="vidcontrol">Pause<br/><span class="glyphicon glyphicon-pause"></span></button>
 
+<div class="overlay"></div>
+
+<script type="text/javascript">
   $( document ).ready(function() {
         
     PH.Playlists.fetchAll().then(function(playlists) {
@@ -57,7 +35,6 @@
 
 <footer class="footer">
   <div class="container">
-      <p>Video Power Hours</p>
-      <p>{{ playlist }}</p>
+      <p>Enjoy your power hour! Drink responsibly.</p>
   </div>
 </footer>
