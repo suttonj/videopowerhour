@@ -88,12 +88,21 @@ a {
 
 .screen {
     position: relative;
-    min-width: 100%; 
+    display: inline;
+    min-width: 50%; 
     min-height: 100%;
     width: auto; 
     height: auto;
     height: 100vh;
     z-index: -100;
+}
+
+#screen1 {
+    float: left;
+}
+
+#screen2 {
+    float: right;
 }
 
 .overlay {
@@ -107,6 +116,20 @@ a {
     z-index: 100;
     background-color: rgba(255,255,255,0);
     background-size: cover;    
+}
+
+#drink {
+    display: none;
+    padding-top: 60px;
+    vertical-align: middle;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 148px;
+    color: #fff;
+}
+
+#donemsg {
+    font-size: 48px;
 }
 
 .browsehappy {
@@ -156,8 +179,12 @@ a {
   border-radius: 60px 60px 60px 60px;
 }
 
-#screenholder button:hover { 
+#vidcontrol:hover { 
    background: rgba(0,0,0,0.5);
+}
+
+.button-text {
+    display: block;
 }
 
 .hide {
