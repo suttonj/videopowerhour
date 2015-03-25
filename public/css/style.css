@@ -64,20 +64,12 @@ a {
   transition: 1s opacity; }
 
 .screen {
-  position: relative;
-  display: inline;
-  min-width: 50%;
+  min-width: 100%;
   min-height: 100%;
   width: auto;
   height: auto;
   height: 100vh;
   z-index: -100; }
-
-#screen1 {
-  float: left; }
-
-#screen2 {
-  float: right; }
 
 .overlay {
   position: fixed;

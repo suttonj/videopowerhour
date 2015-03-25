@@ -87,9 +87,9 @@ a {
 }
 
 .screen {
-    position: relative;
-    display: inline;
-    min-width: 50%; 
+    // position: relative;
+    // display: inline;
+    min-width: 100%; 
     min-height: 100%;
     width: auto; 
     height: auto;
@@ -98,11 +98,12 @@ a {
 }
 
 #screen1 {
-    float: left;
+    // float: left;
+    
 }
 
 #screen2 {
-    float: right;
+    // float: right;
 }
 
 .overlay {
@@ -130,6 +131,8 @@ a {
 
 #donemsg {
     font-size: 48px;
+    text-wrap: normal;
+    word-wrap: normal;
 }
 
 .browsehappy {

@@ -9,8 +9,67 @@ PH.Player = (function playerControl($, _, playlists) {
     screen2 = null, 
     currentScreen = screen1,
     playbackActive = false,
+    plPosition = 0,
     videos = [];
 
+    var screen = screen1,
+        rear = screen2;
+        
+    var playbackLoop = function() {
+        console.log('number of videos plPosition: ' + plPosition);
+        plPosition += 1;
+
+        if (plPosition % 2 == 0) {
+            screen = screen1;
+            rear = screen2;
+        }
+        else {
+            screen = screen2;
+            rear = screen1;
+        }
+        screen.removeClass('hide');
+        rear.addClass('hide');
+        rear.pause();
+        
+        if (plPosition < videos.length && videos[plPosition] && plPosition <= MAXVIDEOS) {
+            console.log('Playlist video ' + videos[plPosition]);
+            screen.play();
+            rear.src(ytUrlPrefix + videos[(plPosition + 1 < videos.length ? plPosition + 1 : 0)]);
+            rear.load();
+            rear.currentTime(50);
+            rear.one('play', function() {
+                rear.pause();
+                console.log('pausing preloaded video');
+            });
+            playbackActive = true;
+        }
+        else if (plPosition <= MAXVIDEOS && plPosition >= videos.length) {
+            screen.play();
+            rear.src(ytUrlPrefix + videos[(plPosition%60) + 1]);
+            rear.load();
+            rear.currentTime(50);
+            rear.one('play', function() {
+                rear.pause();
+                console.log('pausing preloaded video');
+            });
+            console.log('playlist too short, looping to the start');
+            playbackActive = true;
+        }
+        else {
+            clearInterval(window.videoLoop);
+            console.log('playlist over.');
+            screen.pause();
+            playbackActive = false;
+            $("#drink").html("<span id='donemsg'>The Powerhour has completed! Great job!<br/>Don't get up too fast, now...</span>");
+            $("#drink").fadeIn(200);
+            return;
+        }
+        
+        $("#drink").fadeIn(200, function() {
+            $("#drink").fadeOut(800);
+        });
+        
+    };
     // Public API here
     return {
       play: play,
@@ -58,7 +117,6 @@ PH.Player = (function playerControl($, _, playlists) {
               videojs.Youtube.prototype.onError = function(error) {
                 console.log('**handled error-- skipping to next video');
                 console.log(error);
-                debugger;
                 next(this.player_);
               };
 
@@ -80,11 +138,10 @@ PH.Player = (function playerControl($, _, playlists) {
     function play(started) {
         var videos = videos || playlists.getCurrentPlaylistVideos();
 console.log("playlist loaded in play:");
-
-        window.playlistPosition = window.playlistPosition || 0;
-        var played = window.playlistPosition;
-        var screen = screen1;
-        var rear = screen2;
+        var screen = screen1,
+            rear = screen2;
+            
+        plPosition = plPosition || 0;
 
         if (window.videoLoop) {
           clearInterval(window.videoLoop);
@@ -94,72 +151,15 @@ console.log("playlist loaded in play:");
         $("#vidcontrol").css("display","block");
         
         if (started) {
-            //screen.removeClass('hide');
-            //rear.addClass('hide');
+            screen.removeClass('hide');
+            rear.addClass('hide');
             screen.src(ytUrlPrefix + videos[0]);
             screen.load();
             screen.currentTime(50);
             rear.src(ytUrlPrefix + videos[1]);
         }
 
-        window.videoLoop = setInterval(function() {
-            console.log('number of videos played: ' + played);
-            window.playlistPosition += 1;
-            played += 1;
-
-            if (played % 2 == 0) {
-                slideRight(screen1.el(), screen2.el());
-                screen = screen1;
-                rear = screen2;
-            }
-            else {
-                slideLeft(screen1.el(), screen2.el());
-                screen = screen2;
-                rear = screen1;
-            }
-            //screen.removeClass('hide');
-            //rear.addClass('hide');
-            rear.pause();
-            
-            if (played < videos.length && videos[played] && played <= MAXVIDEOS) {
-                console.log('Playlist video ' + videos[played]);
-                screen.play();
-                rear.src(ytUrlPrefix + videos[(played + 1 < videos.length ? played + 1 : 0)]);
-                rear.load();
-                rear.currentTime(50);
-                rear.one('play', function() {
-                    rear.pause();
-                    console.log('pausing preloaded video');
-                });
-                playbackActive = true;
-            }
-            else if (played <= MAXVIDEOS && played >= videos.length) {
-                screen.play();
-                rear.src(ytUrlPrefix + videos[(played%60) + 1]);
-                rear.load();
-                rear.currentTime(50);
-                rear.one('play', function() {
-                    rear.pause();
-                    console.log('pausing preloaded video');
-                });
-                console.log('playlist too short, looping to the start');
-                playbackActive = true;
-            }
-            else {
-                clearInterval(window.videoLoop);
-                console.log('playlist over.');
-                screen.pause();
-                playbackActive = false;
-                $("#drink").html("<span id='donemsg'>The Powerhour has completed! Great job! Don't get up too fast, now...</span>");
-                $("#drink").fadeIn(200);
-                return;
-            }
-            
-            $("#drink").fadeIn(200, function() {
-                $("#drink").fadeOut(800);
-            });
-            
-        },10000);
+        window.videoLoop = setInterval(playbackLoop, 60000);
         
         rear.load();
         rear.one('playing', function() {
@@ -235,18 +235,20 @@ console.log("playlist loaded in play:");
     }
 	      	
     function next(activeScreen) {
-        var played = ++window.playlistPosition;
-        activeScreen.src(ytUrlPrefix + videos[played]); //TODO handle smaller-than-60 playlists
+        activeScreen.src(ytUrlPrefix + videos[++plPosition]); //TODO handle smaller-than-60 playlists
         activeScreen.load();
         activeScreen.currentTime(50);
         activeScreen.one('play', function() {
             activeScreen.pause();
         });
         console.log('handling video error, next video in queue');
+        
+        clearInterval(window.videoLoop);
+        window.videoLoop = setInterval(playbackLoop, 10000);
     }
     
     function reset() {
-      window.playlistPosition = 0;
+      plPosition = 0;
       screen1.pause();
      // $rootScope.screen1.dispose();
       screen2.pause();
