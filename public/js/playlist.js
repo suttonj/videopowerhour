@@ -38,14 +38,14 @@ PH.Playlists = (function playlistControl($, player) {
     }
 
     function getCurrentPlaylistVideos() {
-      var collection = playlists;// || fetchAllPlaylists();
+      var collection = this.playlists;// || fetchAllPlaylists();
       if (collection.length == 0) 
         return null;
       
       var selectedPlaylist = getSelected();
 
       var filtered = collection.filter(function (item) {
-          return item.name == selectedPlaylist;
+          return item.title == selectedPlaylist;
       });
 
       console.log(filtered[0]);
@@ -69,15 +69,16 @@ PH.Playlists = (function playlistControl($, player) {
     console.log('calling get all playlists');
         $.getJSON("/api/playlists")
             .done(function(data) {
-                playlists = data;
-            console.log('got all playlists from api');
-                deferred.resolve(data.map(function(item) {
+              var allPlaylists = data.map(function(item) {
                   return { 
                     title: item.name,
                     id: item.id,
                     videos: item.videos
                   }
-                }));
+                });
+              this.playlists = allPlaylists;
+              console.log('got all playlists from api');
+              deferred.resolve(allPlaylists);
             })
             .error(function(msg, code) {
                 deferred.reject(msg);
@@ -111,7 +112,9 @@ PH.Playlists = (function playlistControl($, player) {
     }
     
     function getAvailablePlaylists() {
-        return this.playlists;
+        return this.playlists.map(function(pl) {
+          return pl.title;
+        });
     }
     
 })(jQuery, PH.Player);

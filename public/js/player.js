@@ -9,6 +9,7 @@ PH.Player = (function playerControl($, _, playlists) {
     screen2 = null, 
     currentScreen = screen1,
     playbackActive = false,
+    currentPlaylist = null,
     plPosition = 0,
     videos = [];
 
@@ -60,8 +61,9 @@ PH.Player = (function playerControl($, _, playlists) {
             console.log('playlist over.');
             screen.pause();
             playbackActive = false;
-            $("#drink").html("<span id='donemsg'>The Powerhour has completed! Great job!<br/>Don't get up too fast, now...</span>");
-            $("#drink").fadeIn(200);
+            $("#start").html("<div class='jumbotron'><span id='donemsg'>The Powerhour has completed! Great job!<br/>Don't get up too fast, now...</span></div>");
+            $("#start").fadeIn(200);
+            $("vidcontrol").hide();
             return;
         }
         
@@ -81,6 +83,7 @@ PH.Player = (function playerControl($, _, playlists) {
     function setup () {
       // var playlist = playlistService.getPlaylist();
 //        var poll = setInterval(function() {
+            this.currentPlaylist = playlists.getSelected();
             videos = playlists.getCurrentPlaylistVideos();
             if (videos === null) {
                 setTimeout(setup, 300);
@@ -130,73 +133,86 @@ PH.Player = (function playerControl($, _, playlists) {
                 screen2.currentTime(50);
                 screen2.pause();
               });
-
+              
+              screen = screen1;
+              rear = screen2;
               $("#vidcontrol").click(togglePlayback);
             }
     }
 
-    function play(started) {
+    function play(userChangedPlaylist, resume) {
         var videos = videos || playlists.getCurrentPlaylistVideos();
 console.log("playlist loaded in play:");
-        var screen = screen1,
-            rear = screen2;
+        // var screen = currentScreen,
+        //     rear = rear;
             
         plPosition = plPosition || 0;
-
+        userChangedPlaylist = userChangedPlaylist || false;
+        resume = resume || false;
+        
         if (window.videoLoop) {
           clearInterval(window.videoLoop);
         }
         
-        $("#start").addClass('hide');
-        $("#vidcontrol").css("display","block");
-        
-        if (started) {
+        if (!resume) {
+            $("#start").hide();
+            $("#vidcontrol").css("display","block");
+            
             screen.removeClass('hide');
             rear.addClass('hide');
+        }
+        
+        if (userChangedPlaylist) {
             screen.src(ytUrlPrefix + videos[0]);
             screen.load();
             screen.currentTime(50);
             rear.src(ytUrlPrefix + videos[1]);
+            rear.load();
+            rear.one('playing', function() {
+                rear.pause();
+                console.log('pausing preloaded video');
+            });
         }
 
-        window.videoLoop = setInterval(playbackLoop, 60000);
-        
-        rear.load();
-        rear.one('playing', function() {
-            rear.pause();
-            console.log('pausing preloaded video');
-        });
+        window.videoLoop = setInterval(playbackLoop, 6000);
+
         screen.play();
         playbackActive = true;
-        $("#playicon").hide();
-        $("#pauseicon").show();
+        // $("#playicon").hide();
+        // $("#pauseicon").show();
     }
 
     function setSelectedPlaylist (title) {
         console.log('selected playlist: ' + title);
-        var currentPlaylist = $("#currentplaylist").text().trim();
-        if (title != currentPlaylist)
-        {   
-            if (_.contains(playlists.getAvailablePlaylists(), title)) {
-                return false;
-            } else {
-                playlists.setSelected(title);
-            }
-            reset();
-            updateCurrentPlaylist(title);
-            $("#drink").hide();
-            $("#drink").html('DRINK!!!');
+        var currentPlaylist = playlists.getSelected();
+        if (!_.contains(playlists.getAvailablePlaylists(), title)) {
+            return false;
         }
         
-        /* TODO trigger on playlist loaded */
-        setTimeout( function () {
-        	play(true);
-        	return true;
-        }, 2000);
+        if (title != currentPlaylist)
+        {   
+            playlists.setSelected(title);
+            if (plPosition > 0) {
+                reset();
+                play(true);
+                $("#drink").hide();
+                $("#drink").html('DRINK!!!');
+                return true;
+            }
+            play(true, false);
+        }
+        else {
+            play(false, false);
+        }
+        
+        updateCurrentPlaylist(title);
+        return true;
     }
-		   
+	
+	
     function updateCurrentPlaylist(title) {
-        $("#currentplaylist").html(title);    
+        $("#currentplaylist").html(title);   
+        this.currentPlaylist = title;
     }
     
     function togglePlayback() { 
@@ -206,24 +222,25 @@ console.log("playlist loaded in play:");
         screen1.el().classList.toggle("stopfade");
         screen2.el().classList.toggle("stopfade");
         
-         //if (!playbackActive) {
-        if (s1paused && s2paused) {
-            play(); 
-            playbackActive = true;
+        if (screen.paused()) {
+        //if (s1paused && s2paused) {
+            play(false, true); 
+            //playbackActive = true;
             $(pauseButton).find('.button-text').text("Pause");
             $(pauseButton).find('.glyphicon').removeClass("glyphicon-play").addClass("glyphicon-pause");
             //$scope.$apply();
-            $("#playicon").hide();
-            $("#pauseicon").show();
+            // $("#playicon").hide();
+            // $("#pauseicon").show();
         }
         else {
-            if (s1paused) {
-                screen2.pause();
-                //screen2.el().classList.toggle("stopfade");
-            } else {
-                screen1.pause();
-                //screen1.el().classList.toggle("stopfade");
-            }
+            // if (s1paused) {
+            //     screen2.pause();
+            //     //screen2.el().classList.toggle("stopfade");
+            // } else {
+            //     screen1.pause();
+            //     //screen1.el().classList.toggle("stopfade");
+            // }
+            screen.pause();
             clearInterval(window.videoLoop);
             playbackActive = false;
             $(pauseButton).find('.button-text').text("Paused");
@@ -235,7 +252,8 @@ console.log("playlist loaded in play:");
     }
 	      	
     function next(activeScreen) {
-        activeScreen.src(ytUrlPrefix + videos[++plPosition]); //TODO handle smaller-than-60 playlists
+        plPosition = plPosition + 1;
+        activeScreen.src(ytUrlPrefix + videos[plPosition]); //TODO handle smaller-than-60 playlists
         activeScreen.load();
         activeScreen.currentTime(50);
         activeScreen.one('play', function() {
@@ -244,7 +262,7 @@ console.log("playlist loaded in play:");
         console.log('handling video error, next video in queue');
         
         clearInterval(window.videoLoop);
-        window.videoLoop = setInterval(playbackLoop, 10000);
+        window.videoLoop = setInterval(playbackLoop, 6000);
     }
     
     function reset() {

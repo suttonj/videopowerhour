@@ -38,8 +38,10 @@ a {
   padding: 15px;
   margin: 0 auto;
   text-align: center;
-  min-height: 640px;
-  z-index: 9999; }
+  max-width: 600px;
+  max-height: 640px;
+  z-index: 1000;
+  opacity: 0.8; }
 
 #start .dropdown {
   display: inline-block;
@@ -79,7 +81,7 @@ a {
   min-height: 100%;
   width: auto;
   height: auto;
-  z-index: 100;
+  z-index: 200;
   background-color: rgba(255, 255, 255, 0);
   background-size: cover; }
 
@@ -93,7 +95,10 @@ a {
   color: #fff; }
 
 #donemsg {
-  font-size: 48px; }
+  font-size: 48px;
+  text-wrap: normal;
+  word-wrap: normal;
+  color: #000; }
 
 .browsehappy {
   margin: 0.2em 0;
@@ -157,7 +162,8 @@ a {
   height: 30px;
   text-align: center;
   background-color: #101010;
-  color: #9d9d9d; }
+  color: #9d9d9d;
+  z-index: 9000; }
 
 .footer p {
   vertical-align: middle;
