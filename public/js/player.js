@@ -72,18 +72,12 @@ PH.Player = (function playerControl($, _, playlists) {
         });
         
     };
-    // Public API here
-    return {
-      play: play,
-      setup: setup,
-      reset: reset,
-      setPlaylist: setSelectedPlaylist
-    };
 
-    function setup () {
+    var setup = function setup () {
       // var playlist = playlistService.getPlaylist();
 //        var poll = setInterval(function() {
             this.currentPlaylist = playlists.getSelected();
+            console.log('starting playlist: ' + this.currentPlaylist); 
             videos = playlists.getCurrentPlaylistVideos();
             if (videos === null) {
                 setTimeout(setup, 300);
@@ -138,9 +132,9 @@ PH.Player = (function playerControl($, _, playlists) {
               rear = screen2;
               $("#vidcontrol").click(togglePlayback);
             }
-    }
+    };
 
-    function play(userChangedPlaylist, resume) {
+    var play = function play(userChangedPlaylist, resume) {
         var videos = videos || playlists.getCurrentPlaylistVideos();
 console.log("playlist loaded in play:");
         // var screen = currentScreen,
@@ -180,9 +174,9 @@ console.log("playlist loaded in play:");
         playbackActive = true;
         // $("#playicon").hide();
         // $("#pauseicon").show();
-    }
+    };
 
-    function setSelectedPlaylist (title) {
+    var setSelectedPlaylist = function setSelectedPlaylist (title) {
         console.log('selected playlist: ' + title);
         var currentPlaylist = playlists.getSelected();
         if (!_.contains(playlists.getAvailablePlaylists(), title)) {
@@ -207,15 +201,15 @@ console.log("playlist loaded in play:");
         
         updateCurrentPlaylist(title);
         return true;
-    }
+    };
 	
 	
-    function updateCurrentPlaylist(title) {
+    var updateCurrentPlaylist = function updateCurrentPlaylist(title) {
         $("#currentplaylist").html(title);   
-        this.currentPlaylist = title;
-    }
+        currentPlaylist = title;
+    };
     
-    function togglePlayback() { 
+    var togglePlayback = function togglePlayback() { 
         var s1paused = screen1.paused();
         var s2paused = screen2.paused();
         var pauseButton = $('#vidcontrol');
@@ -249,9 +243,9 @@ console.log("playlist loaded in play:");
             $("#pauseicon").hide();
             $("#playicon").show();
         }
-    }
+    };
 	      	
-    function next(activeScreen) {
+    var next = function next(activeScreen) {
         plPosition = plPosition + 1;
         activeScreen.src(ytUrlPrefix + videos[plPosition]); //TODO handle smaller-than-60 playlists
         activeScreen.load();
@@ -263,29 +257,30 @@ console.log("playlist loaded in play:");
         
         clearInterval(window.videoLoop);
         window.videoLoop = setInterval(playbackLoop, 6000);
-    }
+    };
     
-    function reset() {
+    var reset = function reset() {
       plPosition = 0;
       screen1.pause();
      // $rootScope.screen1.dispose();
       screen2.pause();
       //$rootScope.screen2.dispose();
       clearInterval(window.videoLoop);
-    }
+    };
 
-    function getBackgroundPlayer() {
+    var getBackgroundPlayer = function getBackgroundPlayer() {
         var s1 = screen1.el(),
             s2 = screen2.el();
             
         return $(s1).hasClass('hide') ? screen1 : screen2;
-    }
+    };
     
-    function slideRight(leftvid, rightvid) {
-        //
-    }
-    
-    function slideLeft(leftvid, rightvid) {
-        //
-    }
+    // Public API here
+    return {
+      play: play,
+      setup: setup,
+      reset: reset,
+      setPlaylist: setSelectedPlaylist
+    };
+
 })($, _, PH.Playlists);

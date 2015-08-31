@@ -85,13 +85,13 @@ var populateDefaultPlaylists = function(done) {
         "maxConnections": 10,
         "callback": function(error, result, $) {
           //console.dir( result);
-          $('.infoHolder h3').each(function(index, h3) {
+          $('div.title-artist > .title').each(function(index, title) {
             //console.log($(h1).text());
-            titles.push($(h3).text());
+            titles.push($(title).text());
           });
-          $('.infoHolder h4').each(function(index, h4) {
+          $('div.title-artist > .artist').each(function(index, artist) {
             //console.log($(h1).text());
-            artists.push($(h4).text());
+            artists.push($(artist).text());
           });
     
           for (var i = 0; i < titles.length; i++) {
